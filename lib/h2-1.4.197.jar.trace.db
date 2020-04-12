@@ -1,0 +1,3 @@
+2020-04-12 23:32:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+INSERT INTO Person(id, name, age)values(?, ?, ?) [42102-197]

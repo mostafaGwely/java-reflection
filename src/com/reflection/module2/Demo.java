@@ -9,7 +9,7 @@ public class Demo {
 
 
     public static void main(String[] args) {
-        Metamodel<Person> personMetamodel = new Metamodel<Person>(Person.class);
+        Metamodel personMetamodel = new Metamodel(Person.class);
 
         List<FieldSystem> columns = personMetamodel.getColumns();
         FieldSystem primaryKey = personMetamodel.getPrimaryKey();

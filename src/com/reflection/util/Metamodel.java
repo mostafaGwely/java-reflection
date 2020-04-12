@@ -6,15 +6,17 @@ import com.reflection.annotations.PrimaryKey;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class Metamodel<T> {
-    private Class<T> clss;
+public class Metamodel {
+    private Class<?> clss;
 
-    public static <T> Metamodel<T> of(Class<T> clss) {
-        return new Metamodel<T>(clss);
+    public static Metamodel of(Class<?> clss) {
+        return new Metamodel(clss);
     }
 
-    public Metamodel(Class<T> clss) {
+    public Metamodel(Class clss) {
         this.clss = clss;
     }
 
@@ -41,5 +43,31 @@ public class Metamodel<T> {
         if(columnFields.size() == 0)
             throw new IllegalArgumentException("no columns field in class "+ clss.getSimpleName());
         return  columnFields;
+    }
+
+    public String buildInsertRequest() {
+        //insert into Person (id,name,age) values (?,?,?)
+        String columnElement = getColumnsElement();
+
+        String questionMarkElement = getQuestionMarkElement();
+
+        return "INSERT INTO "+ this.clss.getSimpleName() +
+                "("+columnElement+")"+ "values"+
+                "("+questionMarkElement+")";
+
+     }
+
+    private String getQuestionMarkElement() {
+        int numberOfColumns = getColumns().size()+1;
+        return IntStream.range(0, numberOfColumns).mapToObj(index -> "?").collect(Collectors.joining(", "));
+    }
+
+    private String getColumnsElement() {
+        String primaryKey = getPrimaryKey().getName();
+        List<String> columnsNames = getColumns().stream()
+                .map(c -> c.getName()).collect(Collectors.toList());
+        columnsNames.add(0,primaryKey);
+
+        return String.join(", ", columnsNames);
     }
 }

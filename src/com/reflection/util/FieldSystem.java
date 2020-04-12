@@ -9,9 +9,20 @@ public  class FieldSystem {
         this.field = field;
     }
 
+    public String getName(){
+        return field.getName();
+    }
     @Override
     public String toString() {
         return "field name: " + field.getName() +
                 "type: "+ field.getType().getSimpleName();
+    }
+
+    public Class<?> getType() {
+        return field.getType();
+    }
+
+    public Field getField() {
+        return this.field;
     }
 }
