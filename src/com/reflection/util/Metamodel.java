@@ -20,7 +20,7 @@ public class Metamodel {
         this.clss = clss;
     }
 
-    public FieldSystem getPrimaryKey()   {
+    public FieldSystem getPrimaryKey() {
         Field[] declaredFields = clss.getDeclaredFields();
         for (Field declaredField : declaredFields) {
             PrimaryKey annotation = declaredField.getAnnotation(PrimaryKey.class);
@@ -28,10 +28,10 @@ public class Metamodel {
                 return new FieldSystem(declaredField);
             }
         }
-        throw new IllegalArgumentException("no PrimaryKey field in class "+ clss.getSimpleName());
+        throw new IllegalArgumentException("no PrimaryKey field in class " + clss.getSimpleName());
     }
 
-    public List<FieldSystem> getColumns()   {
+    public List<FieldSystem> getColumns() {
         Field[] declaredFields = clss.getDeclaredFields();
         List<FieldSystem> columnFields = new ArrayList<>();
         for (Field declaredField : declaredFields) {
@@ -40,9 +40,9 @@ public class Metamodel {
                 columnFields.add(new FieldSystem(declaredField));
             }
         }
-        if(columnFields.size() == 0)
-            throw new IllegalArgumentException("no columns field in class "+ clss.getSimpleName());
-        return  columnFields;
+        if (columnFields.size() == 0)
+            throw new IllegalArgumentException("no columns field in class " + clss.getSimpleName());
+        return columnFields;
     }
 
     public String buildInsertRequest() {
@@ -51,14 +51,14 @@ public class Metamodel {
 
         String questionMarkElement = getQuestionMarkElement();
 
-        return "INSERT INTO "+ this.clss.getSimpleName() +
-                "("+columnElement+")"+ "values"+
-                "("+questionMarkElement+")";
+        return "INSERT INTO " + this.clss.getSimpleName() +
+                "(" + columnElement + ")" + "values" +
+                "(" + questionMarkElement + ")";
 
-     }
+    }
 
     private String getQuestionMarkElement() {
-        int numberOfColumns = getColumns().size()+1;
+        int numberOfColumns = getColumns().size() + 1;
         return IntStream.range(0, numberOfColumns).mapToObj(index -> "?").collect(Collectors.joining(", "));
     }
 
@@ -66,8 +66,15 @@ public class Metamodel {
         String primaryKey = getPrimaryKey().getName();
         List<String> columnsNames = getColumns().stream()
                 .map(c -> c.getName()).collect(Collectors.toList());
-        columnsNames.add(0,primaryKey);
+        columnsNames.add(0, primaryKey);
 
         return String.join(", ", columnsNames);
+    }
+
+    public String buildSelectRequest() {
+        //select id,name,age from Person where id = ?
+        String columnsElement = getColumnsElement();
+
+        return "select " + columnsElement + "from " + this.clss.getSimpleName() + " where " + getPrimaryKey().getName() + " = ?";
     }
 }

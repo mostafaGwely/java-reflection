@@ -30,5 +30,9 @@ public class Demo {
         System.out.println(james);
         System.out.println(susan);
         System.out.println(john);
+
+
+        Person person = entityManager.find(Person.class, 4L);
+        System.out.println(person);
     }
 }
