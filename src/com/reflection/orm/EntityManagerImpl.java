@@ -1,5 +1,6 @@
 package com.reflection.orm;
 
+import com.reflection.annotations.Inject;
 import com.reflection.util.FieldSystem;
 import com.reflection.util.Metamodel;
 
@@ -8,8 +9,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-public abstract class EntityManagerImpl<T> implements EntityManager<T> {
+public   class EntityManagerImpl<T> implements EntityManager<T> {
     private AtomicLong idGenerator = new AtomicLong(0L);
+
+    @Inject
+    Connection connection;
 
     @Override
     public void persist(T t) throws SQLException, IllegalAccessException {
@@ -65,13 +69,9 @@ public abstract class EntityManagerImpl<T> implements EntityManager<T> {
     }
 
     private PreparedStatementWrapper PreparedStatementWith(String sql) throws SQLException {
-        Connection connection = buildConnection();
-        PreparedStatement statement = connection.prepareStatement(sql);
+         PreparedStatement statement = connection.prepareStatement(sql);
         return new PreparedStatementWrapper(statement);
     }
-
-    public abstract Connection buildConnection() throws SQLException;
-
 
     private class PreparedStatementWrapper {
         PreparedStatement statement;

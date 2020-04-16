@@ -1,16 +1,14 @@
-package com.reflection.module3;
+package com.reflection.module4;
 
 import com.reflection.module2.Person;
-import com.reflection.module4.BeanManager;
 import com.reflection.orm.EntityManager;
 import com.reflection.orm.EntityManagerImpl;
 
-import java.sql.SQLException;
-
-public class Demo {
+public class demo {
     public static void main(String[] args) throws Exception {
         BeanManager beanManager = BeanManager.getInstance();
         EntityManager<Person> entityManager =  beanManager.getInstance(EntityManagerImpl.class);
+
 
         Person linda = new Person("linda", 21);
         Person james = new Person("james", 21);
